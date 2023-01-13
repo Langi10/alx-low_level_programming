@@ -2,14 +2,16 @@
 #include <stdlib.h>
 
 /**
- * _calloc - allocates for an array
+ * _calloc - allocates memory for an array
  * @nmemb: number of elements
  * @size: size of bytes
  *
- * Return: a pointer to the allocated memory or NULL
+ * Return: pointer to the allocated memory
+ * if nemb or size is 0, returns NULL
+ * if malloc fails, returns NULL
  */
 
-void *_calloc(unsigned int nmemb, unsigned int size);
+void *_calloc(unsigned int nmemb, unsigned int size)
 {
 	char *p;
 	unsigned int i;
