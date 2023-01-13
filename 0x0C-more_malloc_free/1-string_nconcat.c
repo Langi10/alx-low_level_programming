@@ -6,7 +6,8 @@
  * @s1: newly allocated memory pointer
  * @s2: second string
  * @n: amount of bytes
- * Return: pointer to the allocated memory
+ * Return: NULL if it fails,s2 if n>s2,
+ * if NULL is passed, treat it as an empty string
  */
 char *string_nconcat(char *s1, char *s2, unsigned int n);
 {
