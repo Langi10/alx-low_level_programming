@@ -19,7 +19,7 @@ void free_listp(listp_t **head)
 			curr = curr->next;
 			free(temp);
 		}
-		*head = NULL;
+	*head = NULL;
 	}
 }
 
@@ -66,6 +66,4 @@ size_t print_listint_safe(const listint_t *head)
 
 	free_listp(&hptr);
 	return (nnodes);
-	_putchar('');
-}
 }
