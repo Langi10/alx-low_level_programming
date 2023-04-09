@@ -1,73 +1,53 @@
 #include "hash_tables.h"
 
 /**
- * hash_table_set - adds an element to the hash table.
- * @ht: pointer to the hash table
- * @key: The key
- * @value: The value associated with the key
+ * hash_table_set - Add or update an element in a hash table.
+ * @ht: A pointer to the hash table.
+ * @key: The key to add - cannot be an empty string.
+ * @value: The value associated with key.
  *
- * Return: 1 if success 0 otherwise
+ * Return: Upon failure - 0.
+ *         Otherwise - 1.
  */
-
 int hash_table_set(hash_table_t *ht, const char *key, const char *value)
 {
-	unsigned long int index;
-	hash_node_t *temp = NULL;
+	hash_node_t *new;
+	char *value_copy;
+	unsigned long int index, i;
 
-	if (!ht || !key)
+	if (ht == NULL || key == NULL || *key == '\0' || value == NULL)
+		return (0);
+
+	value_copy = strdup(value);
+	if (value_copy == NULL)
 		return (0);
 
 	index = key_index((const unsigned char *)key, ht->size);
-
-	if (!ht->array[index])
+	for (i = index; ht->array[i]; i++)
 	{
-		ht->array[index] = insert_new_node(key, value);
-		return (1);
-	}
-
-	else
-	{
-		temp = ht->array[index];
-
-		while (temp)
+		if (strcmp(ht->array[i]->key, key) == 0)
 		{
-			if (!strcmp(temp->key, key))
-			{
-				free(temp->value);
-				temp->value = strdup(value);
-				return (1);
-			}
-			temp = temp->next;
+			free(ht->array[i]->value);
+			ht->array[i]->value = value_copy;
+			return (1);
 		}
-		temp = insert_new_node(key, value);
-		temp->next = ht->array[index];
-		ht->array[index] = temp;
-		return (1);
 	}
-	return (0);
-}
 
+	new = malloc(sizeof(hash_node_t));
+	if (new == NULL)
+	{
+		free(value_copy);
+		return (0);
+	}
+	new->key = strdup(key);
+	if (new->key == NULL)
+	{
+		free(new);
+		return (0);
+	}
+	new->value = value_copy;
+	new->next = ht->array[index];
+	ht->array[index] = new;
 
-/**
- * insert_new_node - creates a new hash node
- * @key: The kay value to be stored
- * @value: the value associated with the key to be stored
- *
- * Return: pointer to the newly created hash node or NULL if it fails
- */
-hash_node_t *insert_new_node(const char *key, const char *value)
-{
-	hash_node_t *new_node = NULL;
-
-	new_node = malloc(sizeof(hash_node_t));
-
-	if (!new_node)
-		return (NULL);
-
-
-	new_node->key = strdup(key);
-	new_node->value = strdup(value);
-	new_node->next = NULL;
-
-	return (new_node);
+	return (1);
 }
